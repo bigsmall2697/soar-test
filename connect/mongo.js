@@ -6,6 +6,7 @@ module.exports = ({uri})=>{
   mongoose.connect(uri, {
     // useNewUrlParser: true,
     // useUnifiedTopology: true,
+    timeoutMS: 30000,
   });
 
 
