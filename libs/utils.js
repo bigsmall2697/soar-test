@@ -134,6 +134,12 @@ const isChance = (max)=>{
     return min == value; 
 }
 
+const roles = {
+    STUDENT: 'student',
+    SUPER_ADMIN: 'superAdmin',
+    SCHOOL_ADMIN: 'schoolAdmin'
+};
+
 module.exports = {
   slugify,
   getDeepValue,
@@ -147,5 +153,5 @@ module.exports = {
   hrTime,
   match,
   isChance,
-
+  roles,
 }

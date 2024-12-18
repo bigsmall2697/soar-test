@@ -1,3 +1,4 @@
+const { roles } = require('../../libs/utils');
 const emojis = require('../../public/emojis.data.json');
 
 module.exports = {
@@ -5,6 +6,10 @@ module.exports = {
         path: "id",
         type: "string",
         length: { min: 1, max: 50 },
+    },
+    mongoId: {
+        type: "string",
+        length: 24,
     },
     username: {
         path: 'username',
@@ -15,12 +20,38 @@ module.exports = {
     password: {
         path: 'password',
         type: 'string',
-        length: {min: 8, max: 100},
+        length: {min: 3, max: 100},
     },
     email: {
         path: 'email',
         type: 'string',
         length: {min:3, max: 100},
+    },
+    name: {
+        type: 'String',
+        length: {min: 3, max: 100}
+    },
+    address:{
+        street: {
+            type: 'String',
+            length: {min: 3, max: 100}
+        },
+        city: {
+            type: 'String',
+            length: {min: 3, max: 100}
+        },
+        state: {
+            type: 'String',
+            length: {min: 2, max: 2}
+        },
+        zipCode: {
+            type: 'String',
+            length: {min: 5, max: 5}
+        }
+    },
+    capacity: {
+        type: 'Number',
+        min: 1,
     },
     title: {
         path: 'title',
@@ -84,6 +115,10 @@ module.exports = {
     email: {
         type: 'String',
         regex: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    },
+    role: {
+        type: 'String',
+        enum: Object.values(roles),
     },
     number: {
         type: 'Number',

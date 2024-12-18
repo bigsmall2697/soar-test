@@ -2,6 +2,9 @@ const http              = require('http');
 const express           = require('express');
 const cors              = require('cors');
 const app               = express();
+const yml               = require('yamljs');
+const swaggerUi         = require('swagger-ui-express');
+const swaggerYML        = yml.load('./swagger.yml');
 
 module.exports = class UserServer {
     constructor({config, managers}){
@@ -20,6 +23,7 @@ module.exports = class UserServer {
         app.use(express.json());
         app.use(express.urlencoded({ extended: true}));
         app.use('/static', express.static('public'));
+        app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerYML));
 
         /** an error handler */
         app.use((err, req, res, next) => {
@@ -28,7 +32,7 @@ module.exports = class UserServer {
         });
         
         /** a single middleware to handle all */
-        app.all('/api/:moduleName/:fnName', this.userApi.mw);
+        app.all('/api/:moduleName/:fnName',     this.userApi.mw);
 
         let server = http.createServer(app);
         server.listen(this.config.dotEnv.USER_PORT, () => {

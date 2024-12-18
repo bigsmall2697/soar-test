@@ -1,0 +1,490 @@
+openapi: 3.0.0
+info:
+  version: 0.0.1
+  title: School Management API
+  description: |-
+    The School Management API is a comprehensive backend solution designed to facilitate the management of **users**, **schools**, **classrooms**, and **students** within an educational environment. It offers features for user **authentication**, **authorization**, and **CRUD operations** on essential entities such as users, schools, classrooms, and students.
+
+    ## Key Features:
+    - ### User:
+
+      - Managed by superadmins
+      - Signup / Signin actions
+
+    - ### School:
+    
+      - Managed by superadmins
+      - CRUD operations
+      - School profile management
+
+    - ### Classroom:
+      - Managed by school administrators
+      - Associated with specific schools
+      - Capacity and resource management
+
+    - ### Student:
+      - Managed by school administrators
+      - CRUD operations related to Users
+
+    - ### Security Measures
+      Use JWT tokens for user authentication and authorization.
+    Implement bcrypt for password hashing.
+    Ensure that sensitive operations require super admin privileges.
+
+    - ### Swagger Documentation:
+
+      Provide comprehensive Swagger documentation for each API endpoint.
+    Include details on request/response formats, required parameters, and possible error scenarios.
+    
+    ## Deployment:
+      Deployed the School Management System API on a cloud service Vercel, ensuring seamless access and scalability.
+  contact:
+    email: bigsmall2697@gmail.com
+
+components:
+  securitySchemes:
+    token:
+      type: apiKey
+      in: header
+      name: token
+tags:
+  - name: User
+  - name: School
+  - name: Classroom
+  - name: Student
+
+paths:
+  ## User Management APIs ##
+  /api/user/createUser:
+    post:
+      summary: Create a user with specified access rights
+      tags:
+        - User
+      security:
+        - token: []  # Add your security definition here
+      requestBody:
+        description: 'User details for adding a user'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+              example:
+                username: 'john_doe'
+                email: 'john@example.com'
+                password: 'securepassword'
+                role: superAdmin  # superAdmin / schoolAdmin / student
+      responses:
+        '200':
+          description: Successful creation. Returns a long-lived token for the new user.
+        '400':
+          description: Bad request. Check the request payload for missing or invalid fields.
+        '401':
+          description: Unauthorized. Ensure a valid authentication token is provided.
+        # '403':
+        #   description: Forbidden. Only super admins are authorized to create users with specific access rights.
+
+  /api/user/login:
+    post:
+      summary: Login using registered user credentials
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              example:
+                username: "bigsmall2697@gmail.com"
+                password: "123456789"
+      responses:
+        "200":
+          description: Logged in successfully
+        "400":
+          description: Bad request
+
+  ## School APIs ##
+  /api/school/create:
+      post:
+        summary: Create a new school, you need to be a super admin to do that 
+        tags:
+          - School
+        security:
+          - token: []
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  address:
+                    type: object
+                    properties:
+                      street:
+                        type: string
+                      city:
+                        type: string
+                      state:
+                        type: string
+                      zipCode:
+                        type: string                    
+                example:
+                  name: Modern Future
+                  address:
+                    city: Dallas
+                    state: Texas
+                    zipCode: 00001
+                    street: North Road
+        responses:
+          '200':
+            description: Created successfully
+          '400':
+            description: Bad request
+          "401":
+            description: Unauthorized - Invalid token or insufficient user rights
+  
+  /api/school/update:
+    put:
+      summary: Update school information
+      tags:
+        - School
+      security:
+        - token: []
+      requestBody:
+        description: "School information to update"
+        required: true
+        content:
+          application/json:
+              example:
+                id: "schoolId123"
+                name: "Updated School Name"
+                address: 
+                  city: Dallas
+                  state: Texas
+                  zipCode: 00001
+                  street: North Road
+      responses:
+        "200":
+          description: Successful request
+        "401":
+          description: Unauthorized - Only super admin can update schools
+        "400":
+          description: Bad request
+
+  /api/school/delete:
+    delete:
+      summary: Delete a school
+      tags:
+        - School
+      security:
+        - token: []
+      responses:
+        "200":
+          description: Successful request
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized - Only super admin can delete schools
+
+  /api/school/getAll:
+    get:
+      summary: Get all schools (Super Admin Only)
+      tags:
+        - School
+      security:
+        - token: []
+      responses:
+        "200":
+          description: Successful request
+        "404":
+          description: No schools found
+        "401":
+          description: Unauthorized,You should be a super admin to get all schools
+        "500":
+          description: Internal Server Error
+
+  /api/school/getByID:
+    get:
+      summary: Get school by ID
+      tags:
+        - School
+      security:
+        - token: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: School ID
+      responses:
+        '200':
+          description: Successful request
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized 
+
+## Classroom APIs ##
+  /api/classroom/create:
+    post:
+      summary: Create a new classroom in you school, you have to be a school admin to create a classroom
+      tags:
+        - Classroom
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                capacity:
+                  type: number
+                schoolId:
+                  type: id
+              example:
+                name: 12C
+                capacity: 25
+                schoolId: schoolId1
+      responses:
+        '200':
+          description: Created successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized 
+
+  /api/classroom/update:
+    put:
+      summary: Update classroom information
+      tags:
+        - Classroom
+      security:
+        - token: []
+      requestBody:
+        description: "Classroom information to update"
+        required: true
+        content:
+          application/json:
+              example:
+                id: "12C"
+                name: "Updated Classroom Name"
+                capacity: 30
+                schoolId: "schoolId1"
+      responses:
+        "200":
+          description: Successful request
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+
+  /api/classroom/delete:
+    delete:
+      summary: Delete a classroom
+      tags:
+        - Classroom
+      security:
+        - token: []
+      responses:
+        "200":
+          description: Successful request
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized 
+          
+  /api/classroom/getAll:
+    get:
+      summary: Get all the classrooms
+      tags:
+        - Classroom
+      security:
+        - token: []
+      responses:
+        '200':
+          description: Successful request
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized 
+
+  /api/classroom/getByID:
+    get:
+      summary: Get classroom by ID
+      tags:
+        - Classroom
+      security:
+        - token: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Classroom ID
+      responses:
+        '200':
+          description: Successful request
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized 
+
+## Student APIs ##
+  /api/student/create:
+    post:
+      summary: Create a new student in the classroom, you have to be a school admin or super admin
+      tags:
+        - Student
+      security:
+        - token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                classroomId:
+                  type: id
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                schoolId:
+                  type: id
+              example:
+                firstName: first
+                lastName: last
+                classroomId: 12C
+                username: stu_new
+                email: stuNew@test.com
+                password: test
+                schoolId: schoolId1
+      responses:
+        '200':
+          description: Created successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized 
+
+  /api/student/update:
+    put:
+      summary: Update student information
+      tags:
+        - Student
+      security:
+        - token: []
+      requestBody:
+        description: "Student information to update"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                classroomId:
+                  type: id
+                username:
+                  type: string
+                id:
+                  type: id
+              example:
+                id: studentId1
+                firstName: firstNew
+                lastName: lastNew
+                classroomId: 13C
+                username: stu_old
+      responses:
+        "200":
+          description: Successful request
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+
+  /api/student/delete:
+    delete:
+      summary: Delete a student
+      tags:
+        - Student
+      security:
+        - token: []
+      responses:
+        "200":
+          description: Successful request
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized 
+          
+  /api/student/getAll:
+    get:
+      summary: Get all the students
+      tags:
+        - Student
+      security:
+        - token: []
+      responses:
+        '200':
+          description: Successful request
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized 
+
+  /api/student/getByID:
+    get:
+      summary: Get student by ID
+      tags:
+        - Student
+      security:
+        - token: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Student ID
+      responses:
+        '200':
+          description: Successful request
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized 

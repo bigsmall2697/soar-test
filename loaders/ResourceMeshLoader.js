@@ -1,4 +1,4 @@
-const loader = require('./_common/fileLoader');
+// const loader = require('./_common/fileLoader');
 
 module.exports = class ResourceMeshLoader { 
 
@@ -8,7 +8,7 @@ module.exports = class ResourceMeshLoader {
     }
 
     load(){
-        const nodes = loader('./mws/**/*.rnode.js');
+        // const nodes = loader('./mws/**/*.rnode.js');
 
         /** validate nodes */
 
