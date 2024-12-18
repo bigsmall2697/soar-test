@@ -9,6 +9,8 @@ module.exports = ({uri})=>{
     timeoutMS: 30000,
     socketTimeoutMS: 30000,
     connectTimeoutMS: 30000,
+    waitQueueTimeoutMS: 30000,
+    autoSelectFamilyAttemptTimeout: 30000
   });
 
 
