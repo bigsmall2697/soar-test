@@ -7,6 +7,8 @@ module.exports = ({uri})=>{
     // useNewUrlParser: true,
     // useUnifiedTopology: true,
     timeoutMS: 30000,
+    socketTimeoutMS: 30000,
+    connectTimeoutMS: 30000,
   });
 
 
