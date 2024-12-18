@@ -41,8 +41,8 @@ Authentication middleware: `/mws/__longToken.mw.js`
 
 ## Base URL
 
-The base URL for all API endpoints is `https://server.app/api`.
+The base URL for all API endpoints is `https://soar-test.onrender.com/api`.
 
 ## Documentation
 
-`Swagger` documentation is hosted on `https://server.app/docs`
+`Swagger` documentation is hosted on `https://soar-test.onrender.com/docs`
